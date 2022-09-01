@@ -1,3 +1,3 @@
-# mailpiler-install-pve-lxc
+# mailpiler-install-pve-lxc-debian11
 
-This script is no longer under development and has moved to [bashclub/zamba-lxc-toolbox](https://github.com/bashclub/zamba-lxc-toolbox)
+This script for install mailpiler debian11
