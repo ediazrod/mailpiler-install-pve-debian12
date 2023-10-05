@@ -5,8 +5,8 @@
 PILER_DOMAIN="piler.mydomain.com"
 SMARTHOST="192.168.50.2"
 # This is you host that send e-mail for imap auth
-PILER_VERSION="1.3.10"
-Manticora="3.3.1"
+PILER_VERSION="1.4.4"
+## Manticora="3.3.1"
 PHP_VERSION="7.4"
 
 HOSTNAME=$(hostname -f)
@@ -32,7 +32,10 @@ apt update && apt full-upgrade -y
 
 apt install -y mc sysstat build-essential libwrap0-dev libpst-dev tnef libytnef0-dev unrtf catdoc libtre-dev tre-agrep poppler-utils libzip-dev unixodbc libpq5 software-properties-common libpoppler-dev openssl libssl-dev memcached telnet nginx mariadb-server default-libmysqlclient-dev gcc libwrap0 libzip4 latex2rtf latex2html catdoc tnef libpq5 zipcmp zipmerge ziptool libsodium23
 
-apt update && apt install -y php7.4-fpm php7.4-common php7.4-ldap php7.4-mysql php7.4-cli php7.4-opcache php7.4-phpdbg php7.4-gd php7.4-memcache php7.4-json php7.4-readline php7.4-zip
+# apt update && apt install -y php7.4-fpm php7.4-common php7.4-ldap php7.4-mysql php7.4-cli php7.4-opcache php7.4-phpdbg php7.4-gd php7.4-memcache php7.4-json php7.4-readline php7.4-zip
+# The default install is 8.2 for php
+apt update && apt install -y php8.2-fpm php8.2-common php8.2-mysql php8.2-cli php8.2-opcache php8.2-phpdbg php8.2-gd php-memcache php8.2-readline php8.2-zip php-json/bookworm
+
 
 apt purge -y postfix
 
@@ -48,19 +51,34 @@ EOF
 
 systemctl restart mariadb
 
+wget https://repo.manticoresearch.com/manticore-repo.noarch.deb
+dpkg -i manticore-repo.noarch.deb
+apt update
+
+apt install manticore manticore-extra
+
+systemctl start manticore
+systemctl stop manticore
+systemctl disable manticore
+
 cd /tmp
-wget https://download.mailpiler.com/generic-local/sphinx-$SPHINX_VERSION-bin.tar.gz
-tar -xvzf sphinx-$SPHINX_VERSION-bin.tar.gz -C /
+
+wget https://bitbucket.org/jsuto/piler/downloads/xlhtml-0.5.1-sj-mod.tar.gz
+gzip -dc xlhtml-0.5.1-sj-mod.tar.gz | tar -xvf -
+cd xlhtml-0.5.1-sj-mod
+./configure
+make install
 
 groupadd piler
 useradd -g piler -m -s /bin/bash -d /var/piler piler
 usermod -L piler
 chmod 755 /var/piler
 
+https://bitbucket.org/jsuto/piler/downloads/piler-1.4.4.tar.gz
 wget https://bitbucket.org/jsuto/piler/downloads/piler-$PILER_VERSION.tar.gz
 tar -xvzf piler-$PILER_VERSION.tar.gz
 cd piler-$PILER_VERSION/
-./configure --localstatedir=/var --with-database=mysql --enable-tcpwrappers --enable-memcached
+./configure --localstatedir=/var --with-database=mysql --enable-memcached
 make
 make install
 ldconfig
@@ -69,13 +87,22 @@ cp util/postinstall.sh util/postinstall.sh.bak
 sed -i "s/   SMARTHOST=.*/   SMARTHOST="\"$SMARTHOST\""/" util/postinstall.sh
 sed -i 's/   WWWGROUP=.*/   WWWGROUP="www-data"/' util/postinstall.sh
 
+touch /usr/local/etc/piler/MANTICORE
+
+
+
 make postinstall
+
+# Edit on this page previus
+echo "https://www.mailpiler.org/wiki/current:manticore"
+# Cuidado al editar  /usr/local/etc/piler/piler.conf muchos valores estan duplicados....
+pause
 
 cp /usr/local/etc/piler/piler.conf /usr/local/etc/piler/piler.conf.bak
 sed -i "s/hostid=.*/hostid=$PILER_DOMAIN/" /usr/local/etc/piler/piler.conf
 sed -i "s/update_counters_to_memcached=.*/update_counters_to_memcached=1/" /usr/local/etc/piler/piler.conf
 
-su piler -c "indexer --all --config /usr/local/etc/piler/sphinx.conf"
+# yo creo que esto no hace falta.... su piler -c "indexer --all --config /usr/local/etc/piler/manticore.conf"
 
 /etc/init.d/rc.piler start
 /etc/init.d/rc.searchd start
@@ -90,6 +117,9 @@ apt install python3-certbot-apache/stable
 
 certbot --apache
 
+a2enmod proxy_fcgi setenvif
+a2enconf php8.2-fpm
+systemctl restart apache2
 
 Remove This
 
