@@ -2,10 +2,11 @@
 
 #Some variables to modifi:
 
-PILER_DOMAIN="piler.cloudistboese.de"
+PILER_DOMAIN="piler.mydomain.com"
 SMARTHOST="192.168.50.2"
+# This is you host that send e-mail for imap auth
 PILER_VERSION="1.3.10"
-SPHINX_VERSION="3.3.1"
+Manticora="3.3.1"
 PHP_VERSION="7.4"
 
 HOSTNAME=$(hostname -f)
@@ -81,6 +82,17 @@ su piler -c "indexer --all --config /usr/local/etc/piler/sphinx.conf"
 
 update-rc.d rc.piler defaults
 update-rc.d rc.searchd defaults
+
+apt install -y apache2/stable
+apt install -y certbot/stable
+
+apt install python3-certbot-apache/stable
+
+certbot --apache
+
+
+Remove This
+
 
 mkdir -p /etc/nginx/ssl
 openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -keyout /etc/nginx/ssl/piler.key -out /etc/nginx/ssl/piler.crt -subj "/CN=$PILER_DOMAIN" -addext "subjectAltName=DNS:$PILER_DOMAIN"
