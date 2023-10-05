@@ -6,8 +6,8 @@ PILER_DOMAIN="piler.mydomain.com"
 SMARTHOST="192.168.50.2"
 # This is you host that send e-mail for imap auth
 PILER_VERSION="1.4.4"
-## Manticora="3.3.1"
-PHP_VERSION="7.4"
+## Manticore="6.3"
+PHP_VERSION="8.2"
 
 HOSTNAME=$(hostname -f)
 
@@ -123,39 +123,7 @@ systemctl restart apache2
 
 Remove This
 
-
-mkdir -p /etc/nginx/ssl
-openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -keyout /etc/nginx/ssl/piler.key -out /etc/nginx/ssl/piler.crt -subj "/CN=$PILER_DOMAIN" -addext "subjectAltName=DNS:$PILER_DOMAIN"
-
-cd /etc/nginx/sites-available
-cp /tmp/piler-$PILER_VERSION/contrib/webserver/piler-nginx.conf /etc/nginx/sites-available/
-ln -s /etc/nginx/sites-available/piler-nginx.conf /etc/nginx/sites-enabled/piler-nginx.conf
-
-sed -i "s|PILER_HOST|$PILER_DOMAIN|g" /etc/nginx/sites-available/piler-nginx.conf
-sed -i "s|/var/run/php/php7.4-fpm.sock|/var/run/php/php$PHP_VERSION-fpm.sock|g" /etc/nginx/sites-available/piler-nginx.conf
-
-sed -i "/server_name.*/a \\
-        listen 443 ssl http2;\n\n\
-        ssl_certificate /etc/nginx/ssl/piler.crt;\n\
-        ssl_certificate_key /etc/nginx/ssl/piler.key;\n\n\
-        ssl_session_timeout 1d;\n\
-        ssl_session_cache shared:SSL:15m;\n\
-        ssl_session_tickets off;\n\n\
-        # modern configuration of Mozilla SSL configurator. Tweak to your needs.\n\
-        ssl_protocols TLSv1.2 TLSv1.3;\n\
-        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;\n\
-        ssl_prefer_server_ciphers off;\n\n\
-        add_header X-Frame-Options SAMEORIGIN;\n\
-        add_header X-Content-Type-Options nosniff;" /etc/nginx/sites-available/piler-nginx.conf
-
-sed -i "/^server {.*/i\
-server {\n\
-        listen 80;\n\
-        server_name $PILER_DOMAIN;\n\
-        server_tokens off;\n\
-        # HTTP to HTTPS redirect.\n\
-        return 301 https://$PILER_DOMAIN;\n\
-}" /etc/nginx/sites-available/piler-nginx.conf
+@ make you own config here...
 
 cp /usr/local/etc/piler/config-site.php /usr/local/etc/piler/config-site.php.bak
 sed -i "s|\$config\['SITE_URL'\] = .*|\$config\['SITE_URL'\] = 'https://$PILER_DOMAIN/';|" /usr/local/etc/piler/config-site.php
@@ -205,10 +173,10 @@ cat >> /usr/local/etc/piler/config-site.php <<EOF
 //\$config['LDAP_DISTRIBUTIONLIST_ATTR'] = 'mailAlternativeAddress';
 // special settings.
 \$config['MEMCACHED_ENABLED'] = 1;
-\$config['SPHINX_STRICT_SCHEMA'] = 1; // required for Sphinx $SPHINX_VERSION, see https://bitbucket.org/jsuto/piler/issues/1085/sphinx-331.
+\$config['SPHINX_STRIC_T_SCHEMA'] = 1; // required for Sphinx $SPHINX_VERSION, see https://bitbucket.org/jsuto/piler/issues/1085/sphinx-331.
 EOF
 
-nginx -t && systemctl restart nginx
+
 
 apt autoremove -y
 apt clean -y
