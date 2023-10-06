@@ -102,8 +102,6 @@ cp /usr/local/etc/piler/piler.conf /usr/local/etc/piler/piler.conf.bak
 sed -i "s/hostid=.*/hostid=$PILER_DOMAIN/" /usr/local/etc/piler/piler.conf
 sed -i "s/update_counters_to_memcached=.*/update_counters_to_memcached=1/" /usr/local/etc/piler/piler.conf
 
-# yo creo que esto no hace falta.... su piler -c "indexer --all --config /usr/local/etc/piler/manticore.conf"
-
 /etc/init.d/rc.piler start
 /etc/init.d/rc.searchd start
 
@@ -121,7 +119,23 @@ a2enmod proxy_fcgi setenvif
 a2enconf php8.2-fpm
 systemctl restart apache2
 
-Remove This
+# Edit crontab for the user piler
+
+### PILERSTART
+#5,35 * * * * /usr/local/libexec/piler/indexer.delta.sh
+#30   2 * * * /usr/local/libexec/piler/indexer.main.sh
+40 3 * * * /usr/local/libexec/piler/purge.sh
+#3 * * * * /usr/local/libexec/piler/watch_sphinx_main_index.sh
+#*/15 * * * * /usr/bin/indexer --quiet tag1 --rotate --config /usr/local/etc/piler/manticore.conf
+#*/15 * * * * /usr/bin/indexer --quiet note1 --rotate --config /usr/local/etc/piler/manticore.conf
+30   6 * * * /usr/bin/php /usr/local/libexec/piler/generate_stats.php --webui /var/piler/www >/dev/null
+*/5 * * * * /usr/bin/find /var/piler/error -type f|wc -l > /var/piler/stat/error
+*/5 * * * * /usr/bin/find /var/piler/www/tmp -type f -name i.\* -exec rm -f {} \;
+#*/5 * * * * /usr/local/libexec/piler/import.sh
+### PILEREND
+
+The index is not needed.
+
 
 @ make you own config here...
 
