@@ -74,6 +74,7 @@ useradd -g piler -m -s /bin/bash -d /var/piler piler
 usermod -L piler
 chmod 755 /var/piler
 
+cd /tmp
 https://bitbucket.org/jsuto/piler/downloads/piler-1.4.4.tar.gz
 wget https://bitbucket.org/jsuto/piler/downloads/piler-$PILER_VERSION.tar.gz
 tar -xvzf piler-$PILER_VERSION.tar.gz
@@ -134,7 +135,7 @@ systemctl restart apache2
 #*/5 * * * * /usr/local/libexec/piler/import.sh
 ### PILEREND
 
-The index is not needed.
+The index is not needed if you use real time index
 
 
 @ make you own config here...
