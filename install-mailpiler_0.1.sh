@@ -51,13 +51,12 @@ EOF
 
 systemctl restart mariadb
 
+#Follow this guide to install manticore https://docs.mailpiler.com/piler-ee/migrate-sphinx-to-manticore/
 wget https://repo.manticoresearch.com/manticore-repo.noarch.deb
+
 dpkg -i manticore-repo.noarch.deb
-apt update
-
-apt install manticore manticore-extra
-
-systemctl start manticore
+apt-get update
+apt-get install -y manticore manticore-columnar-lib manticore-extra
 systemctl stop manticore
 systemctl disable manticore
 
@@ -137,7 +136,6 @@ systemctl restart apache2
 
 The index is not needed if you use real time index
 
-
 @ make you own config here...
 
 cp /usr/local/etc/piler/config-site.php /usr/local/etc/piler/config-site.php.bak
@@ -190,8 +188,6 @@ cat >> /usr/local/etc/piler/config-site.php <<EOF
 \$config['MEMCACHED_ENABLED'] = 1;
 \$config['SPHINX_STRIC_T_SCHEMA'] = 1; // required for Sphinx $SPHINX_VERSION, see https://bitbucket.org/jsuto/piler/issues/1085/sphinx-331.
 EOF
-
-
 
 apt autoremove -y
 apt clean -y
