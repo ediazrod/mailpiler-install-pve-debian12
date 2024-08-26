@@ -101,6 +101,7 @@ pause
 cp /usr/local/etc/piler/piler.conf /usr/local/etc/piler/piler.conf.bak
 sed -i "s/hostid=.*/hostid=$PILER_DOMAIN/" /usr/local/etc/piler/piler.conf
 sed -i "s/update_counters_to_memcached=.*/update_counters_to_memcached=1/" /usr/local/etc/piler/piler.conf
+# modify archive_only_mydomains=0 to 1
 
 /etc/init.d/rc.piler start
 /etc/init.d/rc.searchd start
