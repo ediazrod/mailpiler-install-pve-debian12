@@ -25,12 +25,13 @@ fi
 
 apt install -y gpg apt-transport-https lsb-release
 
+#Edit this file to import the key ok..
 wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add -
 echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
 
 apt update && apt full-upgrade -y
 
-apt install -y mc sysstat build-essential libwrap0-dev libpst-dev tnef libytnef0-dev unrtf catdoc libtre-dev tre-agrep poppler-utils libzip-dev unixodbc libpq5 software-properties-common libpoppler-dev openssl libssl-dev memcached telnet nginx mariadb-server default-libmysqlclient-dev gcc libwrap0 libzip4 latex2rtf latex2html catdoc tnef libpq5 zipcmp zipmerge ziptool libsodium23
+apt install -y mc sysstat build-essential libwrap0-dev libpst-dev tnef libytnef0-dev unrtf catdoc libtre-dev tre-agrep poppler-utils libzip-dev unixodbc libpq5 software-properties-common libpoppler-dev openssl libssl-dev memcached telnet mariadb-server default-libmysqlclient-dev gcc libwrap0 libzip4 latex2rtf latex2html catdoc tnef libpq5 zipcmp zipmerge ziptool libsodium23
 
 # apt update && apt install -y php7.4-fpm php7.4-common php7.4-ldap php7.4-mysql php7.4-cli php7.4-opcache php7.4-phpdbg php7.4-gd php7.4-memcache php7.4-json php7.4-readline php7.4-zip
 # The default install is 8.2 for php
@@ -62,7 +63,7 @@ systemctl disable manticore
 
 cd /tmp
 
-wget https://bitbucket.org/jsuto/piler/downloads/xlhtml-0.5.1-sj-mod.tar.gz
+https://github.com/jsuto/piler/releases/download/piler-1.4.6/xlhtml-0.5.1-sj-mod.tar.gz
 gzip -dc xlhtml-0.5.1-sj-mod.tar.gz | tar -xvf -
 cd xlhtml-0.5.1-sj-mod
 ./configure
@@ -74,8 +75,7 @@ usermod -L piler
 chmod 755 /var/piler
 
 cd /tmp
-https://bitbucket.org/jsuto/piler/downloads/piler-1.4.4.tar.gz
-wget https://bitbucket.org/jsuto/piler/downloads/piler-$PILER_VERSION.tar.gz
+wget https://github.com/jsuto/piler/archive/refs/tags/piler-1.4.6.tar.gz
 tar -xvzf piler-$PILER_VERSION.tar.gz
 cd piler-$PILER_VERSION/
 ./configure --localstatedir=/var --with-database=mysql --enable-memcached
@@ -191,3 +191,14 @@ EOF
 
 apt autoremove -y
 apt clean -y
+
+# edit you defail apache.conf to add the piler lines..
+
+    DocumentRoot "/var/piler/www"
+
+    <Directory /var/piler/www>
+       Require all granted
+
+       AllowOverride all
+    </Directory>
+
