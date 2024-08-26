@@ -5,7 +5,7 @@
 PILER_DOMAIN="piler.mydomain.com"
 SMARTHOST="192.168.50.2"
 # This is you host that send e-mail for imap auth
-PILER_VERSION="1.4.4"
+PILER_VERSION="1.4.6"
 ## Manticore="6.3"
 PHP_VERSION="8.2"
 
