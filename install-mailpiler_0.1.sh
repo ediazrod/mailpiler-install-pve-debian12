@@ -35,7 +35,7 @@ apt install -y mc sysstat build-essential libwrap0-dev libpst-dev tnef libytnef0
 
 # apt update && apt install -y php7.4-fpm php7.4-common php7.4-ldap php7.4-mysql php7.4-cli php7.4-opcache php7.4-phpdbg php7.4-gd php7.4-memcache php7.4-json php7.4-readline php7.4-zip
 # The default install is 8.2 for php
-apt update && apt install -y php8.2-fpm php8.2-common php8.2-mysql php8.2-cli php8.2-opcache php8.2-phpdbg php8.2-gd php-memcache php8.2-readline php8.2-zip php-json/bookworm python3-mysqldb/stable
+apt update && apt install -y apache2 php8.2-fpm php8.2-common php8.2-mysql php8.2-cli php8.2-opcache php8.2-phpdbg php8.2-gd php-memcache php8.2-readline php8.2-zip php-json/bookworm python3-mysqldb/stable
 
 
 apt purge -y postfix
